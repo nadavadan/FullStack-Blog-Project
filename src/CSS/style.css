@@ -1,0 +1,76 @@
+.main {
+    display: flex;
+    background-color: white;
+    justify-content: space-between;
+    opacity: 0.7;
+}
+.toolbar{
+
+    background-color: white;
+    justify-content: space-between;
+    opacity: 0.7;
+
+}
+.title{
+    font-size: x-large;
+    text-align: justify;
+}
+.login{
+    float: right;
+    padding: 10px;
+    }
+
+h1 {
+    text-decoration: underline;
+}
+
+body {
+    background-image: url("../Pics/background.jpg");
+}
+
+.sideBar {
+    display: flex;
+    flex-direction: column;
+    margin-left: 40px;
+    flex-basis: 20%;
+}
+
+.post-container {
+    position: relative ;
+    border: 2px solid black;
+    margin-bottom: 10px;
+    margin-right: 70px;
+    padding: 5px;
+    min-height: 40%;
+}
+
+.post-title {
+    margin: 5px;
+    font-size: large;
+    text-decoration: underline;
+
+
+}
+
+.post-content {
+    margin: 5px 5px 70px;
+    padding-right: 100px;
+
+
+}
+.post-image {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+}
+
+.post-footer {
+    text-align: right;
+    margin-top: inherit;
+    margin-bottom: 0;
+    font-size: 14px;
+    font-style: italic;
+}
+.App {
+    font-family: cursive;
+}

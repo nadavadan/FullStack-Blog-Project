@@ -1,0 +1,22 @@
+.app-header{
+    justify-content: space-between;
+    padding-left: 10px;
+}
+.app-container{
+    display: flex;
+}
+
+.mainSection-container {
+    display: flex;
+    flex-direction: column;
+    flex-basis: 80%;
+    padding-left: 10px;
+}
+
+.sidebar-container {
+    display: flex;
+    flex-direction: column;
+    margin-left: 40px;
+    flex-basis: 20%;
+
+}
