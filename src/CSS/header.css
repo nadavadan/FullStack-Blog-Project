@@ -2,9 +2,7 @@
     display: flex;
     justify-content: space-between;
 }
-.login {
-    float: right;
-}
+
 .vertical-line {
     padding: 0.5px;
 }

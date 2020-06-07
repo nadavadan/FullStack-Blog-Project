@@ -38,7 +38,6 @@ class NewPost extends React.Component {
         }
 
         axios.post('/posts', data).then(res => {
-            const post = res.data;
             this.setState({title: '',
                 content: '',
                 author:''});
