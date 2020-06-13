@@ -96,7 +96,7 @@ def login():
 def sign_up():
     data = request.get_json()
 
-    if isUser(data['username']):
+    if userExists(data['username']):
         return abort(409)
 
     hashed_pass = bcrypt.hashpw(data['password'].encode('utf-8'), bcrypt.gensalt())
@@ -109,7 +109,9 @@ def sign_up():
     return {'Message': data['username'] + 'signup successfully'}
 
 
-def isUser(username):
+
+def userExists(username):
+    ans = False
     query = 'select userName from users where userName=%s'
     values = (username,)
     cursor = db.cursor()
@@ -117,7 +119,8 @@ def isUser(username):
     user_record = cursor.fetchone()
     cursor.close()
     if user_record:
-        return True
+        ans = True
+    return ans
 
 
 @app.route('/logout', methods=['POST'])
