@@ -4,15 +4,20 @@ import uuid
 import bcrypt
 
 db = mysql.connect(
-    host="localhost",
-    user="root",
-    passwd="MyPass",
+    host="myrds.c94pitaorldi.us-east-1.rds.amazonaws.com",
+    port = 3306,
+    user="admin",
+    passwd="12345678",
     database="nadav_database"
 )
+app = Flask(__name__,
+            static_folder='/home/ubuntu/build',
+            static_url_path='/')
 
-print(db)
+@app.route('/')
+def index():
+    return app.send_static_file('index.html')
 
-app = Flask(__name__)
 
 
 @app.route('/posts', methods=['GET', 'POST'])

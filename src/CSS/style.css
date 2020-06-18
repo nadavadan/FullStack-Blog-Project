@@ -21,7 +21,7 @@ h1 {
 }
 
 body {
-    background-image: url("../Pics/background.jpg");
+    background-image: url("https://nadavbucket1.s3.amazonaws.com/background.jpg");
 }
 
 .sideBar {
