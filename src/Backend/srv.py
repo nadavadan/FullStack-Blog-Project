@@ -18,7 +18,9 @@ app = Flask(__name__,
 def index():
     return app.send_static_file('index.html')
 
-
+@app.route('/api/alive')
+def api_alive():
+    return "alive"
 
 @app.route('/posts', methods=['GET', 'POST'])
 def manage_requests():
