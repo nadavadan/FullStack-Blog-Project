@@ -2,13 +2,16 @@ import React from 'react';
 import Axios from 'axios';
 
 export default class LogInPage extends React.Component {
+
     constructor(props) {
         super(props);
         this.state = {
             username: "",
             password: "",
+            userid:"",
         };
     }
+
     handleLogIn = (event) => {
         event.preventDefault();
         const { username, password} = this.state
@@ -18,22 +21,24 @@ export default class LogInPage extends React.Component {
             password:password
         })
             .then((res) => {
+                if(res.status === 200) {
+                    console.log("RES",res)
+                    this.props.onLogIn(res.data,username )
+                    this.setState({
+                        username: null,
+                        password: null,
+                        resp: "User loged in successfully."
+                    });
+                    this.props.history.push('/');
+                }
+            }).catch((err) => {
                 this.setState({
                     username: null,
-                    password: null,
-                    resp: "User loged in successfully."
+                    password:null,
+                    resp: "Login failed."
                 });
                 alert(this.state.resp);
-                this.props.history.push('/');
-                this.props.onLogIn()
-            }).catch((err) => {
-            this.setState({
-                username: null,
-                password:null,
-                resp: "Login failed."
             });
-            alert(this.state.resp);
-        });
     }
 
     handleLoginUserNameChange = (event) => {

@@ -5,7 +5,7 @@ function AboutMe(){
         <div>
             <h1>About Me</h1>
             <p>
-                All the secrets here
+                About Me
             </p>
         </div>
     )

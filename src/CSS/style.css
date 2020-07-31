@@ -30,7 +30,6 @@ body {
     margin-left: 40px;
     flex-basis: 20%;
 }
-
 .post-container {
     position: relative ;
     border: 2px solid black;
@@ -39,15 +38,11 @@ body {
     padding: 5px;
     min-height: 40%;
 }
-
 .post-title {
     margin: 5px;
     font-size: large;
     text-decoration: underline;
-
-
 }
-
 .post-content {
     margin: 5px 5px 70px;
     padding-right: 100px;

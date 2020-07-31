@@ -7,10 +7,11 @@ class NewPost extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            title: undefined,
-            content: undefined,
-            author: undefined,
+            title: null,
+            content: null,
+            author: this.props.username,
         };
+        console.log(this.props)
     }
 
     handleTitleChange = (e) => {
@@ -23,11 +24,6 @@ class NewPost extends React.Component {
             content: e.target.value,
         })
     }
-    handleAuthorChange = (e) => {
-        this.setState({
-            author: e.target.value,
-        })
-    }
 
     handleSubmit = (e) => {
         e.preventDefault();
@@ -37,11 +33,18 @@ class NewPost extends React.Component {
             author: this.state.author,
         }
 
-        axios.post('/posts', data).then(res => {
-            this.setState({title: '',
-                content: '',
-                author:''});
-        })
+        axios.post('/posts', data)
+            .then(res => {
+                this.setState({
+                    title: '',
+                    content: '',
+                    author:'',
+                });
+                this.props.history.push('/');
+            })
+            .catch(err=>{
+                console.log(err)
+            })
     }
 
     render() {
@@ -54,8 +57,6 @@ class NewPost extends React.Component {
                            onChange={this.handleTitleChange}></input>
                     <br/><br/>
                     <textarea rows="8" cols="50" value={this.state.content} placeholder="Post content goes here..." onChange={this.handleContentChange}/>
-                    <br/><br/>
-                    <input type="text" value={this.state.author} placeholder="Author" size="54" onChange={this.handleAuthorChange}/>
                     <br/><br/>
                     <input type="submit" value="Save post" onClick={this.handleSubmit}/>
                 </p>

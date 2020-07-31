@@ -21,13 +21,11 @@ export default class SignUpPage extends React.Component {
             username: event.target.value
         });
     }
-
     handlePassChange = (event) => {
         this.setState({
             password:event.target.value
         });
     }
-
     handleSignUp = (event) => {
         event.preventDefault();
         const {fullname, username, password} = this.state
@@ -64,7 +62,7 @@ export default class SignUpPage extends React.Component {
                 Full Name: <input type="text" name="full_name" onChange={this.handleFullNameChange}/><br/>
                 Username: <input type="text" name="user_name" onChange={this.handleUserNameChange}/><br/>
                 Password: <input type="password" name="password" onChange={this.handlePassChange}/><br/>
-                <button onClick={this.handleSignUp}>Sign up</button><br/><br/>
+                <button onClick={this.handleSignUp}>Sign Up</button><br/><br/>
             </div>
         );
     }

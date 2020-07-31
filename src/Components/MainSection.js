@@ -2,15 +2,25 @@ import React from 'react'
 import Posts from "./Posts";
 import '../CSS/style.css';
 
-function MainSection() {
-    return(
-        <section >
-            <label className="title"> Best blog</label>
-            <div className= "posts-list">
-                <Posts/>
-            </div>
+class MainSection extends React.Component {
 
-        </section>
-    );
+    constructor(props) {
+        super(props);
+        this.state = {
+            username: this.props.username,
+        };
+    }
+
+    render() {
+        return(
+            <section >
+                <label className="title"> Best Blog</label>
+                <div className= "posts-list">
+                    <Posts {...this.props} username={this.state.username}/>
+                </div>
+            </section>
+        );
+    }
 }
+
 export default MainSection;

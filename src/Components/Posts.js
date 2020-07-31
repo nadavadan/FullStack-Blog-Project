@@ -4,56 +4,87 @@ import {Link} from "react-router-dom";
 import axios from "axios";
 
 
-class Posts extends React.Component {
+export default class Posts extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            posts: []
+            posts: [],
+            comments:[],
+            comment:"",
+            username:this.props.username,
         };
+
+        console.log(this.props)
     }
 
     componentDidMount() {
         axios.get('/posts').then(res => {
-            this.setState({
-                posts: res.data,
-            });
+            if (res.data!== "no posts" ) {
+                this.setState({
+                    posts: res.data,
+                });
+            }
+        })
+    }
+
+    showPost =()=> {
+        return this.state.posts.map((post,index)=>{
+        return this.onePost(post,index)
         })
     }
 
 
     render() {
-        return this.state.posts.map(function (post) {
-            return <Post
-                title={post.title}
-                content={post.content}
-                image={post.image}
-                published={post.published}
-                author={post.author}
-                id={post.id}
-            />
-        })
+        return (
+            <div>
+                {this.showPost()}
+            </div>
+        )
     }
 
-}
+    deletePost = (post_id) => {
+        console.log("in delete post")
+        axios.post(`/delete/${post_id}`)
+            .then(res => {
 
-function Post(props) {
-    return (
-        <div className="post-container">
-            <div className="post">
-                <label className="post-title">
-                    <Link to={`/post/${props.id}`} className="post-title"> {props.title} </Link>
-                </label>
-                <p className="post-content">
-                    {props.content}
-                </p>
-                <img width="90" height="90" className="post-image" src={props.image}/>
-                <label className="post-footer">
-                    Published {props.published} by {props.author}
-                </label>
+                this.componentDidMount()
+                this.setState({
+                    posts:[]
+                });
+            })
+
+            .catch(err=>{
+                console.log(err)
+            })
+        }
+
+
+     onePost=(post,index)=>{
+        return (
+            <div key = {index}>
+            <div className="post-container">
+                <div className="post">
+                    <label className="post-title">
+                        <Link to={`/post/${post.id}`} className="post-title"> {post.title} </Link>
+
+                        {this.props.username === post.author &&
+                            <>
+                                <Link to={`/edit/${post.id}`} className="post-title">Edit  </Link>
+                                <button onClick={()=>this.deletePost(post.id)}> Delete </button>
+                            </>
+                        }
+
+                    </label>
+                    <p className="post-content">
+                        {post.content}
+                    </p>
+                    <label className="post-footer">
+                        Published {post.published} by {post.author}
+                    </label>
+                </div>
             </div>
-        </div>
-    );
+                <Link to={`/post/${post.id}`} className="comments"> {'Comments'} </Link>
+            </div>
+        );
+    }
 }
-
-
-export default Posts;
