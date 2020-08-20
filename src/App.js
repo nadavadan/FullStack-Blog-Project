@@ -15,6 +15,8 @@ import SignUpPage from "./Pages/SignUpPage";
 import LogInPage from "./Pages/LogInPage";
 import Edit from "./Pages/Edit";
 import { Redirect } from "react-router-dom";
+import Posts from "./Components/Posts";
+
 
 
 
@@ -61,6 +63,8 @@ class App extends React.Component {
                         <Route path="/login"
                             render={(props) => <LogInPage {...props} onLogIn={this.set_login_true}/> }>
                         </Route>
+                        <Route path="/posts" component={(props)=><Posts {...props} username={username}/>}/>
+                        {/*<Route path="/postss/:keyword" component={(props)=><Posts {...props} username={username}/>}/>*/}
                         <Route path ="/signup" component={SignUpPage}/>
                         <Route path='/post/:id' component={(props)=><Post {...props} username={username} is_logged_in={is_logged_in} />}/>
                         <Route path='/edit/:id' component={(props)=> is_logged_in ?

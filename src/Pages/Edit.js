@@ -43,7 +43,7 @@ class Edit extends React.Component {
             content: this.state.content,
         }
 
-        axios.post(`/edit/${this.state.postId}`, data)
+        axios.put(`/posts/${this.state.postId}`, data)
             .then(res => {
                 if(res.status === 200) {
                     this.setState({

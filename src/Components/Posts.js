@@ -12,11 +12,11 @@ export default class Posts extends React.Component {
             comments:[],
             comment:"",
             username:this.props.username,
+            key:this.props.MyKey,
         };
 
-        console.log(this.props)
-    }
 
+    }
     componentDidMount() {
         axios.get('/posts').then(res => {
             if (res.data!== "no posts" ) {
@@ -26,6 +26,37 @@ export default class Posts extends React.Component {
             }
         })
     }
+
+    // componentDidMount() {
+    //     axios.get('/posts').then(res => {
+    //         if (res.data !== "no posts") {
+    //             this.setState({
+    //                 posts: res.data,
+    //             });
+    //         }
+    //
+    //     })
+    //     console.log("this key in post" + this.state.key)
+    //     let key = this.state.key
+    //     if(key !== "") {
+    //         axios.get('/posts').then(res => {
+    //             if (res.data !== "no posts") {
+    //                 this.setState({
+    //                     posts: res.data,
+    //                 });
+    //             }
+    //
+    //         })
+    //     } else {
+    //         axios.get('/posts').then(res => {
+    //             if (res.data!== "no posts" ) {
+    //                 this.setState({
+    //                     posts: res.data,
+    //                 });
+    //             }
+    //         })
+    //     }
+    // }
 
     showPost =()=> {
         return this.state.posts.map((post,index)=>{
@@ -43,8 +74,7 @@ export default class Posts extends React.Component {
     }
 
     deletePost = (post_id) => {
-        console.log("in delete post")
-        axios.post(`/delete/${post_id}`)
+        axios.delete(`/posts/${post_id}`)
             .then(res => {
 
                 this.componentDidMount()
@@ -61,6 +91,7 @@ export default class Posts extends React.Component {
 
      onePost=(post,index)=>{
         return (
+
             <div key = {index}>
             <div className="post-container">
                 <div className="post">
@@ -77,6 +108,7 @@ export default class Posts extends React.Component {
                     </label>
                     <p className="post-content">
                         {post.content}
+
                     </p>
                     <label className="post-footer">
                         Published {post.published} by {post.author}

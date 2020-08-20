@@ -48,7 +48,6 @@ class Comments extends React.Component {
             postid:this.props.post_id,
             content: this.state.comment,
         }
-        console.log("data:  ",data)
 
         axios.post(`/comment/${this.props.post_id}`, data).then(res => {
             this.setState({

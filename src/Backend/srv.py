@@ -10,7 +10,7 @@ pool = mysql.connector.pooling.MySQLConnectionPool(
     host="myrds.c94pitaorldi.us-east-1.rds.amazonaws.com",
     user="admin",
     port = 3306,
-    passwd="12345678",
+    passwd="nadavN14",
     database="nadav_database",
     buffered=True,
     pool_size=3
@@ -19,7 +19,7 @@ pool = mysql.connector.pooling.MySQLConnectionPool(
 #pool = mysql.connector.pooling.MySQLConnectionPool(
  #   host="localhost",
   #  user="root",
-   # passwd="my_pass",
+   # passwd="nadavAB1747",
     #database="nadav_database",
     #pool_size=3,
     #buffered=True
@@ -51,6 +51,7 @@ def teardown_request(exception):
 #    user="admin",
 #    passwd="12345678",
 #    database="nadav_database"
+#password = nadavN14
 #)
 
 @app.route('/')
@@ -61,6 +62,28 @@ def index():
 def api_alive():
     return "alive"
 
+
+
+################## REQUESTS AND FUNCTIONS ############
+
+@app.route('/postss/<key>', methods=['GET',])
+def get_posts_by_key(key):
+        query = "select id,title,content,author,published from posts where content REGEXP %s "
+        value = (str(key),)
+        print(str(key))
+        data = []
+        cursor = g.db.cursor()
+        cursor.execute(query,value)
+        records = cursor.fetchall()
+        header = ['id', 'title', 'content', 'author', 'published']
+        if not records:
+            return "no posts"
+        for r in records:
+            data.append(dict(zip(header, r)))
+        cursor.close()
+        return json.dumps(data, default=str)
+
+
 @app.route('/posts', methods=['GET', 'POST'])
 def manage_requests():
     if request.method == 'GET':
@@ -68,6 +91,19 @@ def manage_requests():
     else:
         return add_post()
 
+def get_all_posts():
+    query = "select id,title,content,author,published from posts"
+    data = []
+    cursor = g.db.cursor()
+    cursor.execute(query)
+    records = cursor.fetchall()
+    header = ['id', 'title', 'content', 'author', 'published']
+    if not records:
+        return "no posts"
+    for r in records:
+        data.append(dict(zip(header, r)))
+    cursor.close()
+    return json.dumps(data, default=str)
 
 def add_post():
     now = datetime.now()
@@ -85,22 +121,18 @@ def add_post():
     return 'New post added. id: ' + str(new_post_id)
 
 
-def get_all_posts():
-    query = "select id,title,content,author,published from posts"
-    data = []
-    cursor = g.db.cursor()
-    cursor.execute(query)
-    records = cursor.fetchall()
-    header = ['id', 'title', 'content', 'author', 'published']
-    if not records:
-        return "no posts"
-    for r in records:
-        data.append(dict(zip(header, r)))
-    cursor.close()
-    return json.dumps(data, default=str)
 
 
-@app.route('/posts/<id>')
+@app.route('/posts/<id>', methods = ['GET','PUT','DELETE'])
+def manage_id_requests(id):
+    if request.method == 'GET':
+        return get_post_by_ID(id)
+    if request.method == 'PUT':
+        return edit_post(id)
+    if request.method == 'DELETE':
+        return delete(id)
+
+
 def get_post_by_ID(id):
     query = "select id,title,content,author, published from posts where id=%s"
     values = (id,)
@@ -112,6 +144,35 @@ def get_post_by_ID(id):
     cursor.close()
 
     return json.dumps(dict(zip(header, records[0])), default=str)
+
+#@app.route('/edit/<id>', methods=['POST'])
+def edit_post(id):
+    now = datetime.now()
+    full_time = now.strftime("%d/%m/%Y %H:%M:%S")
+    data = request.get_json()
+    query = "update posts set title=%s, content=%s, published=%s where id=%s"
+    values = (data['title'], data['content'], full_time, id)
+    cursor = g.db.cursor()
+    cursor.execute(query, values)
+    g.db.commit()
+    post_edit_id = cursor.lastrowid
+    cursor.close()
+
+    return 'post id: ' + str(post_edit_id) + "Edited successfully"
+
+#@app.route('/delete/<id>', methods=['POST'])
+def delete(id):
+        query = "delete  from posts where id = %s"
+        values = (id,)
+        cursor = g.db.cursor()
+        cursor.execute(query, values)
+        g.db.commit()
+        post_edit_id = cursor.lastrowid
+        cursor.close()
+
+        return 'post id: ' + str(post_edit_id) + "Deleted succesfully"
+
+
 
 
 @app.route('/login', methods=['POST'])
@@ -203,32 +264,7 @@ def logout():
         return "Success!"
     return "Failed!"
 
-@app.route('/edit/<id>', methods=['POST'])
-def edit_post(id):
-    now = datetime.now()
-    full_time = now.strftime("%d/%m/%Y %H:%M:%S")
-    data = request.get_json()
-    query = "update posts set title=%s, content=%s, published=%s where id=%s"
-    values = (data['title'], data['content'], full_time, id)
-    cursor = g.db.cursor()
-    cursor.execute(query, values)
-    g.db.commit()
-    post_edit_id = cursor.lastrowid
-    cursor.close()
 
-    return 'post id: ' + str(post_edit_id) + "Edited successfully"
-
-@app.route('/delete/<id>', methods=['POST'])
-def delete(id):
-        query = "delete  from posts where id = %s"
-        values = (id,)
-        cursor = g.db.cursor()
-        cursor.execute(query, values)
-        g.db.commit()
-        post_edit_id = cursor.lastrowid
-        cursor.close()
-
-        return 'post id: ' + str(post_edit_id) + "Deleted succesfully"
 
 @app.route('/comment/<id>', methods=['GET', 'POST'])
 def manage_comment_requests(id):
@@ -244,7 +280,7 @@ def add_comment(data):
     print(data)
     query = "insert into comments (username, content, postid, published) values (%s, %s, %s, %s)"
     values = (data['username'], data['content'], data['postid'], full_time)
-    #values = ('1', '2', '3', '3')
+
     cursor = g.db.cursor()
     cursor.execute(query, values)
     g.db.commit()
@@ -266,6 +302,8 @@ def get_all_comments(id):
     cursor.close()
 
     return json.dumps(data, default=str)
+
+
 
 
 
