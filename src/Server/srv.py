@@ -16,15 +16,6 @@ pool = mysql.connector.pooling.MySQLConnectionPool(
     pool_size=3
 )
 
-#pool = mysql.connector.pooling.MySQLConnectionPool(
- #   host="localhost",
-  #  user="root",
-   # passwd="nadavAB1747",
-    #database="nadav_database",
-    #pool_size=3,
-    #buffered=True
-#)
-
 app = Flask(__name__,
             static_folder='/home/ubuntu/build',
             static_url_path='/')
@@ -37,22 +28,6 @@ def before_request():
 @app.teardown_request
 def teardown_request(exception):
     g.db.close()
-
-#db = mysql.connect(
-    #host="localhost",
-    #port = 5000,
-    # user="root",
-   # passwd="my_password",
-  #  database="nadav_database"
-#)
-
-#db = mysql.connect(
-#    port = 3306,
-#    user="admin",
-#    passwd="12345678",
-#    database="nadav_database"
-#password = nadavN14
-#)
 
 @app.route('/')
 def index():
