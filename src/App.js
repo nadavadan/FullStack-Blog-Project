@@ -9,11 +9,8 @@ import {
 import Header from "./Components/Header"
 import AboutMe from "./Pages/AboutMe";
 import HomePage from "./Pages/HomePage";
-import NewPost from "./Pages/NewPost";
-import Post from "./Pages/SinglePost";
 import SignUpPage from "./Pages/SignUpPage";
 import LogInPage from "./Pages/LogInPage";
-import Edit from "./Pages/Edit";
 import { Redirect } from "react-router-dom";
 import Posts from "./Components/Posts";
 import CreateAndEdit from "./Pages/CreateAndEdit";

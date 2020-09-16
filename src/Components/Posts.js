@@ -20,7 +20,7 @@ export default class Posts extends React.Component {
 
     }
     componentDidMount() {
-        if (this.state.search){
+         if (this.state.search){
             axios.get(`/postss/${this.state.key}`).then(res => {
                 if (res.data!== "no posts" ) {
                     this.setState({
@@ -29,7 +29,7 @@ export default class Posts extends React.Component {
                 }
             })
         }
-        else axios.get('/posts').then(res => {
+         else axios.get('/posts').then(res => {
             if (res.data!== "no posts" ) {
                 this.setState({
                     posts: res.data,

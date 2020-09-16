@@ -36,7 +36,7 @@ class MainSection extends React.Component {
                 search: false
             })
         }
-        // this.componentDidUpdate()
+         this.componentDidUpdate()
     }
 
     render() {

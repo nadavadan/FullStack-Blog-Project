@@ -7,10 +7,10 @@ import mysql.connector, mysql.connector.pooling
 
 pool = mysql.connector.pooling.MySQLConnectionPool(
     pool_name="pool",
-    host="myrds.c94pitaorldi.us-east-1.rds.amazonaws.com",
+    host="?",
     user="admin",
     port = 3306,
-    passwd="nadavN14",
+    passwd="?",
     database="nadav_database",
     buffered=True,
     pool_size=3
@@ -68,8 +68,8 @@ def api_alive():
 
 @app.route('/postss/<key>', methods=['GET',])
 def get_posts_by_key(key):
-        query = "select id,title,content,author,published from posts where content REGEXP '4'"
-        value = '4'
+        query = "select id,title,content,author,published from posts where content REGEXP '%s'"
+        value = key
         #value = (str(key),)
         data = []
         cursor = g.db.cursor()

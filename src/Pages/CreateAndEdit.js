@@ -1,10 +1,7 @@
 import React, {useState} from 'react';
 import axios from 'axios';
-import { Editor } from "@tinymce/tinymce-react";
-import RichText from "./component/RichText";
 import CKEditor from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-
 
 class CreateAndEdit extends React.Component {
 
