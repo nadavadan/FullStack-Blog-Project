@@ -1,6 +1,10 @@
 import React from 'react';
 import '../CSS/post.css';
 import axios from "axios";
+import ReactHtmlParser, { processNodes, convertNodeToElement, htmlparser2 } from 'react-html-parser';
+import CKEditor from "@ckeditor/ckeditor5-react";
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+
 
 
 class Comments extends React.Component {
@@ -29,7 +33,6 @@ class Comments extends React.Component {
         if (this.state.comments !== []) {
             return this.state.comments.map((comment) => {
                 return this.oneComment(comment)
-
             })
         }
         else return <h3> no comments </h3>
@@ -65,7 +68,15 @@ class Comments extends React.Component {
                 {this.showComment()}
                 {this.state.is_logged_in &&
                 <div>
-                    <input type="text" value={this.state.comment} placeholder="Add your comment" size="54" onChange={this.handleAddComment}/>
+                    <CKEditor
+                        placeholder="Add your comment"
+                        editor={ ClassicEditor }
+                        onChange={ ( event, editor ) => {
+                            this.state.comment= editor.getData();
+                            console.log( { event, editor } );
+                        } }
+                    />
+                    {/*<input type="text" value={this.state.comment} placeholder="Add your comment" size="54" onChange={this.handleAddComment}/>*/}
                     <br/><br/>
                     <button onClick={this.onNewCommentClick}>Post</button>
                 </div>
@@ -84,7 +95,7 @@ class Comments extends React.Component {
                             <h5>{props.username}</h5>
                         </label>
                         <p className="post-content">
-                            {props.content}
+                            {ReactHtmlParser(props.content)}
                         </p>
                         <label className="post-footer">
                             {props.published}

@@ -68,9 +68,9 @@ def api_alive():
 
 @app.route('/postss/<key>', methods=['GET',])
 def get_posts_by_key(key):
-        query = "select id,title,content,author,published from posts where content REGEXP %s "
-        value = (str(key),)
-        print(str(key))
+        query = "select id,title,content,author,published from posts where content REGEXP '4'"
+        value = '4'
+        #value = (str(key),)
         data = []
         cursor = g.db.cursor()
         cursor.execute(query,value)
@@ -88,22 +88,24 @@ def get_posts_by_key(key):
 def manage_requests():
     if request.method == 'GET':
         return get_all_posts()
-    else:
+    if request.method == 'POST':
         return add_post()
 
 def get_all_posts():
-    query = "select id,title,content,author,published from posts"
+    query = "select id,title,content,author,published,counter from posts"
     data = []
     cursor = g.db.cursor()
     cursor.execute(query)
     records = cursor.fetchall()
-    header = ['id', 'title', 'content', 'author', 'published']
+    header = ['id', 'title', 'content', 'author', 'published', 'counter']
     if not records:
         return "no posts"
     for r in records:
         data.append(dict(zip(header, r)))
     cursor.close()
     return json.dumps(data, default=str)
+
+
 
 def add_post():
     now = datetime.now()
@@ -134,13 +136,13 @@ def manage_id_requests(id):
 
 
 def get_post_by_ID(id):
-    query = "select id,title,content,author, published from posts where id=%s"
+    query = "select id,title,content,author, published, counter from posts where id=%s"
     values = (id,)
     #data = []
     cursor = g.db.cursor()
     cursor.execute(query, values)
     records = cursor.fetchall()
-    header = ['id', 'title', 'content', 'author', 'published']
+    header = ['id', 'title', 'content', 'author', 'published','counter']
     cursor.close()
 
     return json.dumps(dict(zip(header, records[0])), default=str)
@@ -160,7 +162,6 @@ def edit_post(id):
 
     return 'post id: ' + str(post_edit_id) + "Edited successfully"
 
-#@app.route('/delete/<id>', methods=['POST'])
 def delete(id):
         query = "delete  from posts where id = %s"
         values = (id,)
@@ -174,8 +175,33 @@ def delete(id):
 
 
 
+@app.route('/login', methods=['GET','POST'])
+def manage_login_requests():
+    if request.method =='GET':
+        return get_username()
+    if request.method =='POST':
+        return login()
 
-@app.route('/login', methods=['POST'])
+def get_username():
+            session_id = request.cookies.get('session_id')
+            query = "select userId from sessions where sessionId = %s"
+            values = (session_id,)
+            cursor = g.db.cursor()
+            cursor.execute(query, values)
+            g.db.commit()
+            user_id = cursor.fetchone()
+            print("in get user" + str(user_id))
+
+            query = "select userName from users where id =%s"
+            values = str(user_id)
+            cursor = g.db.cursor()
+            cursor.execute(query, values)
+            g.db.commit()
+            username = cursor.fetchone()
+            print(str(username))
+
+            return str(username)
+
 def login():
     data = request.get_json()
     query = "select id, pass from users where username = %s"
@@ -183,6 +209,8 @@ def login():
     cursor = g.db.cursor()
     cursor.execute(query, values)
     record = cursor.fetchone()
+    if not record and data['googlesign'] == 'true' :
+        return google_sign_up(data['fullname'],data['username'],data['password'])
     if not record:
         abort(401)
 
@@ -202,12 +230,20 @@ def login():
     my_dict = {'userid': user_id,'response': response}
 
     return str(user_id)
-    #return response
+
+def google_sign_up(fullname,username,password):
+    hashed_pass = bcrypt.hashpw(data['password'].encode('utf-8'), bcrypt.gensalt())
+    query = 'insert into users (fullName, userName, pass) values (%s, %s, %s)'
+    values = (fullname, username, password)
+    cursor = g.db.cursor()
+    ursor.execute(query, values)
+    g.db.commit()
+    cursor.close()
+    return "google_sign_up"
 
 @app.route('/signup', methods=['POST'])
 def sign_up():
     data = request.get_json()
-
     if userExists(data['username']):
         return abort(409)
 
@@ -302,6 +338,34 @@ def get_all_comments(id):
     cursor.close()
 
     return json.dumps(data, default=str)
+
+@app.route('/counter/<id>', methods=['PUT'])
+def post_counter(id):
+    query = "update posts set counter=counter+%s where id=%s"
+    values = ("1",id)
+    cursor = g.db.cursor()
+    cursor.execute(query, values)
+    g.db.commit()
+    cursor.close()
+
+@app.route('/popular', methods=['GET'])
+def popular_posts_id():
+    query = "SELECT id FROM posts ORDER BY counter DESC LIMIT 5"
+    data = []
+    cursor = g.db.cursor()
+    cursor.execute(query)
+    records = cursor.fetchall()
+    if not records:
+        return "no posts"
+
+    for r in records:
+        data.append(r)
+
+    cursor.close()
+    return json.dumps(records)
+
+
+
 
 
 

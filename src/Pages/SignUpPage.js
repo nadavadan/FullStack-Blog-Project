@@ -1,5 +1,6 @@
 import React from "react";
 import Axios from "axios";
+import '../CSS/Signup_Page.css';
 
 export default class SignUpPage extends React.Component {
     constructor(props) {
@@ -8,22 +9,29 @@ export default class SignUpPage extends React.Component {
             fullname: "",
             username: "",
             password: "",
+            fullnameFill:false,
+            usernameFill:false,
+            passwordFill:false,
         };
     }
 
     handleFullNameChange = (event) => {
         this.setState({
-            fullname: event.target.value
+            fullname: event.target.value,
+            fullnameFill: event.target.value !== "",
         });
     }
     handleUserNameChange = (event) => {
         this.setState({
-            username: event.target.value
+            username: event.target.value,
+            usernameFill: event.target.value !== "",
         });
     }
     handlePassChange = (event) => {
         this.setState({
-            password:event.target.value
+            password:event.target.value,
+            passwordFill: event.target.value !== "",
+
         });
     }
     handleSignUp = (event) => {
@@ -58,11 +66,11 @@ export default class SignUpPage extends React.Component {
     render() {
         return (
             <div className="sign_up">
-                <h2>SignUp</h2>
-                Full Name: <input type="text" name="full_name" onChange={this.handleFullNameChange}/><br/>
-                Username: <input type="text" name="user_name" onChange={this.handleUserNameChange}/><br/>
-                Password: <input type="password" name="password" onChange={this.handlePassChange}/><br/>
-                <button onClick={this.handleSignUp}>Sign Up</button><br/><br/>
+                <h2></h2>
+                  <input type="text" placeholder={"Full Name"} name="full_name" onChange={this.handleFullNameChange}/><br/>
+                  <input type="text"placeholder={"User Name"}name="user_name" onChange={this.handleUserNameChange}/><br/>
+                  <input type="password" placeholder={"Password"} name="password" onChange={this.handlePassChange}/><br/>
+                <button disabled={this.state.usernameFill&&this.state.fullnameFill&&this.state.passwordFill? false:true}onClick={this.handleSignUp}>Sign Up</button><br/><br/>
             </div>
         );
     }

@@ -2,6 +2,8 @@ import React from 'react';
 import '../CSS/post.css';
 import {Link} from "react-router-dom";
 import axios from "axios";
+import ReactHtmlParser, { processNodes, convertNodeToElement, htmlparser2 } from 'react-html-parser';
+
 
 
 export default class Posts extends React.Component {
@@ -13,12 +15,21 @@ export default class Posts extends React.Component {
             comment:"",
             username:this.props.username,
             key:this.props.MyKey,
+            search:this.props.search,
         };
-
 
     }
     componentDidMount() {
-        axios.get('/posts').then(res => {
+        if (this.state.search){
+            axios.get(`/postss/${this.state.key}`).then(res => {
+                if (res.data!== "no posts" ) {
+                    this.setState({
+                        posts: res.data,
+                    });
+                }
+            })
+        }
+        else axios.get('/posts').then(res => {
             if (res.data!== "no posts" ) {
                 this.setState({
                     posts: res.data,
@@ -76,17 +87,26 @@ export default class Posts extends React.Component {
     deletePost = (post_id) => {
         axios.delete(`/posts/${post_id}`)
             .then(res => {
-
                 this.componentDidMount()
                 this.setState({
                     posts:[]
                 });
-            })
-
-            .catch(err=>{
+            }).catch(err=>{
                 console.log(err)
             })
-        }
+    }
+
+    postCounter = (post_id) => {
+        axios.put(`/counter/${post_id}`)
+            .then(res => {
+                this.componentDidMount()
+                this.setState({
+                    posts:[]
+                });
+            }).catch(err=>{
+
+            })
+    }
 
 
      onePost=(post,index)=>{
@@ -96,7 +116,12 @@ export default class Posts extends React.Component {
             <div className="post-container">
                 <div className="post">
                     <label className="post-title">
-                        <Link to={`/post/${post.id}`} className="post-title"> {post.title} </Link>
+                        <a href={`/post/${post.id}`}>
+                            <button className="post-title-button" onClick={()=>this.postCounter(post.id)}>
+                                <span className="button--inner">{post.title}</span>
+                            </button>
+                        </a>
+                        {/*<Link to={`/post/${post.id}`} className="post-title"> {post.title} </Link>*/}
 
                         {this.props.username === post.author &&
                             <>
@@ -107,11 +132,12 @@ export default class Posts extends React.Component {
 
                     </label>
                     <p className="post-content">
-                        {post.content}
-
+                        {ReactHtmlParser(post.content)}
                     </p>
                     <label className="post-footer">
                         Published {post.published} by {post.author}
+                        <span className="vertical-line"> | </span>
+                        {post.counter} Views
                     </label>
                 </div>
             </div>

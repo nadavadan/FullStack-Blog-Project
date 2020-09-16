@@ -39,26 +39,23 @@ class Header extends React.Component {
 
     render() {
         return (
-            <header>
-                <div className="nav-bar">
-                    <div>
-                    <Link to="/">Home</Link>
-                        <span className="vertical-line"> | </span>
-                        <Link to="/about">About</Link>
-                        <span className="vertical-line"> | </span>
-                        <Link to="/add-post">New Post</Link>
-                    </div>
-
-                    <div className="login_signin_logout">
-                        {!this.props.is_logged_in && <Link  to="/signup">Sign Up</Link>}
-                        {this.props.is_logged_in && <label>{'Hello ' + this.props.user_name} </label>}
-                        <span className="vertical-line"> | </span>
-                        {!this.props.is_logged_in && <Link to="/login">Login</Link>}
-                        {this.props.is_logged_in && <Link to='/' onClick={this.doLogout}> Logout</Link>}
-                    </div>
-
+            <div>
+                <div className="left-nav-bar">
+                <Link to="/">Home</Link>
+                    {/*<span className="vertical-line"> | </span>*/}
+                    <Link to="/about">About</Link>
+                    {/*<span className="vertical-line"> | </span>*/}
+                    <Link to="/add-post">New Post</Link>
                 </div>
-            </header>
+
+                <div className="login_signin_logout">
+                    {!this.props.is_logged_in && <Link  to="/signup">Sign Up</Link>}
+                    {this.props.is_logged_in && <label>{'Hello ' + this.props.user_name} </label>}
+                    {/*<span className="vertical-line"> | </span>*/}
+                    {!this.props.is_logged_in && <Link to="/login">Login</Link>}
+                    {this.props.is_logged_in && <Link to='/' onClick={this.doLogout}> Logout</Link>}
+                </div>
+            </div>
         );
     }
 }

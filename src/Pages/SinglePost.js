@@ -1,6 +1,8 @@
 import React from "react";
 import axios from "axios";
 import Comments from "../Components/Comments";
+import ReactHtmlParser, { processNodes, convertNodeToElement, htmlparser2 } from 'react-html-parser';
+
 
 class PostPage extends React.Component {
     constructor(props) {
@@ -24,10 +26,11 @@ class PostPage extends React.Component {
     }
 
     render() {
+        {ReactHtmlParser(this.state.post.content)}
         return (
             <div>
                 <h1>{this.state.post.title}</h1>
-                <p>{this.state.post.content}</p>
+                <p>{ReactHtmlParser(this.state.post.content)}</p>
                 <Comments post_id = {this.state.post_id} username={this.props.username} is_logge_in={this.state.is_logged_in} />
             </div>
         )

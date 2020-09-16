@@ -14,6 +14,7 @@ class Edit extends React.Component {
             post :[],
         };
     }
+
     componentDidMount() {
         let {postId} = this.state;
         axios.get(`/posts/${postId}`).then(res => {

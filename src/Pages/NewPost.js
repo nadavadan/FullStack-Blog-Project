@@ -1,5 +1,8 @@
 import React from 'react';
 import axios from 'axios';
+import { Editor } from "@tinymce/tinymce-react";
+
+
 
 
 class NewPost extends React.Component {
@@ -10,6 +13,7 @@ class NewPost extends React.Component {
             title: null,
             content: null,
             author: this.props.username,
+            legalinput: false,
         };
         console.log(this.props)
     }
@@ -53,12 +57,13 @@ class NewPost extends React.Component {
                 <h1>Create new post</h1>
                 <p>
                     <br/>
-                    <input type="text" value={this.state.title} placeholder="Post title goes here..." size="54"
+                    <input type="text" value={this.state.title} placeholder="CreateAndEdit title goes here..." size="54"
                            onChange={this.handleTitleChange}></input>
                     <br/><br/>
-                    <textarea rows="8" cols="50" value={this.state.content} placeholder="Post content goes here..." onChange={this.handleContentChange}/>
+                    <Editor rows="8" cols="50" value={this.state.content} placeholder="CreateAndEdit content goes here..." onChange={this.handleContentChange}/>
                     <br/><br/>
-                    <input type="submit" value="Save post" onClick={this.handleSubmit}/>
+                    {/*<button disabled={this.state.email.length<1}>Submit</button>*/}
+                    <input type="submit"disabled={this.state.legalinput} value="Save post" onClick={this.handleSubmit}/>
                 </p>
             </div>
         );

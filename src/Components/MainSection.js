@@ -1,6 +1,7 @@
 import React from 'react'
 import Posts from "./Posts";
 import '../CSS/style.css';
+import '../CSS/main_section.css'
 import {Link} from "react-router-dom";
 
 class MainSection extends React.Component {
@@ -10,7 +11,7 @@ class MainSection extends React.Component {
         this.state = {
             key : "",
             username: this.props.username,
-            search: false
+            search: false,
         };
     }
     componentDidUpdate() {
@@ -23,9 +24,8 @@ class MainSection extends React.Component {
 
 
     handleSearch = (e) => {
-        e.preventDefault()
-        console.log("this is the e", e.target.value)
-        if(e.target.value !== undefined) {
+        // e.preventDefault()
+        if(e.target.value !== "") {
             this.setState({
                 key: e.target.value,
                 search: true
@@ -36,26 +36,26 @@ class MainSection extends React.Component {
                 search: false
             })
         }
-        this.componentDidUpdate()
+        // this.componentDidUpdate()
     }
 
     render() {
         return(
-            <section >
-                {console.log("this is render", this.state)}
-                <label className="title"> Best Blog</label>
-                <span className="vertical-line"> | </span>
-                <input type="text" placeholder="Search" size="54" onChange={this.handleSearch}/>
-                <div className= "posts-list">
+            <div className = "main-section">
+                <section >
+                    <label className="title"> Best Blog</label>
+                    <span className="vertical-line"> | </span>
+                    <input type="text" placeholder="Search" size="54" onChange={this.handleSearch}/>
+                    <div className= "posts-list">
 
-                    {
-
-                        // this.state.search && <Posts {...this.props} username={this.state.username} MyKey={this.state.key}/>
-                        <Posts {...this.props} username={this.state.username} MyKey={this.state.key}/>
-                    }
-                </div>
-            </section>
-        );
+                        {
+                            // this.state.search && <Posts {...this.props} username={this.state.username} MyKey={this.state.key}/>
+                            <Posts {...this.props} username={this.state.username} search = {this.state.search} MyKey={this.state.key}/>
+                        }
+                    </div>
+                </section>
+            </div>
+    );
     }
 }
 
