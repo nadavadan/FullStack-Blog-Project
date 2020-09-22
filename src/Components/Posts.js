@@ -10,86 +10,66 @@ export default class Posts extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            posts: [],
+            // posts: [],
+            found:this.props.found,
+            posts:this.props.Posts,
             comments:[],
             comment:"",
-            username:this.props.username,
+            username:this.props.Username,
             key:this.props.MyKey,
-            search:this.props.search,
+            search:this.props.Search,
         };
 
     }
+
     componentDidMount() {
-         if (this.state.search){
-            axios.get(`/postss/${this.state.key}`).then(res => {
-                if (res.data!== "no posts" ) {
-                    this.setState({
-                        posts: res.data,
-                    });
-                }
-            })
-        }
-         else axios.get('/posts').then(res => {
-            if (res.data!== "no posts" ) {
-                this.setState({
-                    posts: res.data,
-                });
-            }
-        })
+           axios.get('/posts').then(res => {
+               console.log("this is res ", res.data)
+               if (res.data !== "no posts") {
+                   console.log("posts are:", res.data)
+                   this.setState({
+                       search: false,
+                       posts: res.data,
+                   });
+               }
+           })
     }
 
-    // componentDidMount() {
-    //     axios.get('/posts').then(res => {
-    //         if (res.data !== "no posts") {
-    //             this.setState({
-    //                 posts: res.data,
-    //             });
-    //         }
-    //
-    //     })
-    //     console.log("this key in post" + this.state.key)
-    //     let key = this.state.key
-    //     if(key !== "") {
-    //         axios.get('/posts').then(res => {
-    //             if (res.data !== "no posts") {
-    //                 this.setState({
-    //                     posts: res.data,
-    //                 });
-    //             }
-    //
-    //         })
-    //     } else {
-    //         axios.get('/posts').then(res => {
-    //             if (res.data!== "no posts" ) {
-    //                 this.setState({
-    //                     posts: res.data,
-    //                 });
-    //             }
-    //         })
-    //     }
-    // }
-
     showPost =()=> {
-        return this.state.posts.map((post,index)=>{
-        return this.onePost(post,index)
-        })
+        console.log("this is show post", this.state.posts)
+        console.log("this is show post props", this.props.Posts)
+        console.log(JSON.stringify(this.props.Posts))
+        if (this.props.Search){
+            if (!this.state.found){
+
+            }
+            return this.props.Posts.map((post,index)=>{
+                return this.onePost(post,index)
+            })
+        }else {
+            return this.state.posts.map((post,index)=>{
+                return this.onePost(post,index)
+            })
+        }
+
     }
 
 
     render() {
+        console.log(this.state.posts)
         return (
             <div>
                 {this.showPost()}
             </div>
-        )
-    }
+        )}
 
     deletePost = (post_id) => {
-        axios.delete(`/posts/${post_id}`)
+        const data={
+            post_id:post_id,
+        }
+        axios.post('/delete',data)
             .then(res => {
-                this.componentDidMount()
                 this.setState({
-                    posts:[]
                 });
             }).catch(err=>{
                 console.log(err)
@@ -101,7 +81,6 @@ export default class Posts extends React.Component {
             .then(res => {
                 this.componentDidMount()
                 this.setState({
-                    posts:[]
                 });
             }).catch(err=>{
 
@@ -110,23 +89,22 @@ export default class Posts extends React.Component {
 
 
      onePost=(post,index)=>{
+        console.log("this is post", post)
         return (
 
             <div key = {index}>
             <div className="post-container">
                 <div className="post">
                     <label className="post-title">
-                        <a href={`/post/${post.id}`}>
-                            <button className="post-title-button" onClick={()=>this.postCounter(post.id)}>
+                        <Link to={`/post/${post.id}`}>
+                            <button value={"post"} className="post-title-button" onClick={()=>this.postCounter(post.id)}>
                                 <span className="button--inner">{post.title}</span>
                             </button>
-                        </a>
-                        {/*<Link to={`/post/${post.id}`} className="post-title"> {post.title} </Link>*/}
-
+                        </Link>
                         {this.props.username === post.author &&
                             <>
-                                <Link to={`/edit/${post.id}`} className="post-title">Edit  </Link>
-                                <button onClick={()=>this.deletePost(post.id)}> Delete </button>
+                                <Link to={`/edit/${post.id}`} className="edit">Edit  </Link>
+                                <button className="delete" onClick={()=>this.deletePost(post.id)}> Delete </button>
                             </>
                         }
 
@@ -141,8 +119,10 @@ export default class Posts extends React.Component {
                     </label>
                 </div>
             </div>
+                {console.log(post.id)}
                 <Link to={`/post/${post.id}`} className="comments"> {'Comments'} </Link>
             </div>
         );
     }
+
 }

@@ -1,13 +1,37 @@
 .post-container {
     position: relative;
-    /*border: 1px solid black;*/
+    border: 5px solid black;
     margin-bottom: 10px;
     padding: 5px;
     min-height: 40%;
 }
+.post-title-button{
+    background: none!important;
+    border: none;
+    padding: 0!important;
+    font-family: arial, sans-serif;
+    color: #069;
+    text-decoration: underline;
+    cursor: pointer
 
+}
+.edit{
+    float: right;
+
+}
+.delete{
+    float: right;
+    background: none!important;
+    border: none;
+    padding: 0!important;
+    font-family: arial, sans-serif;
+    color: #069;
+    text-decoration: underline;
+    cursor: pointer
+}
 .post-title {
-    margin: 5px;
+
+    /*margin: 5px;*/
 }
 
 .post-content {
@@ -29,7 +53,4 @@
     top: -10px;
     margin: 0px;
     position: relative;
-    /*border: 3px solid #73AD21;*/
-
-
 }

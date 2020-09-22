@@ -1,9 +1,8 @@
 import React from 'react';
 import Axios from 'axios';
 import '../CSS/Login_Page.css';
-import SignUpPage from "./SignUpPage";
 import GoogleLogin from 'react-google-login';
-
+import {Link} from "react-router-dom";
 
 
 
@@ -18,12 +17,12 @@ export default class LogInPage extends React.Component {
             userid:"",
             usernamefill:false,
             passwordfill:false,
-            googlesign:'true',
+            googlesign:'false',
         };
     }
 
     handleLogIn = (event) => {
-        // event.preventDefault();
+        event.preventDefault();
         const { username, password,fullname,googlesign} = this.state
 
         Axios.post('/login', {
@@ -35,19 +34,20 @@ export default class LogInPage extends React.Component {
                 if(res.status === 200) {
                     this.props.onLogIn(res.data, username)
                     this.setState({
-                        username: null,
-                        password: null,
+                        username: "",
+                        password: "",
                         resp: "User loged in successfully."
                     });
                     this.props.history.push('/');
                 }
             }).catch((err) => {
                 this.setState({
-                    username: null,
-                    password:null,
+                    username: "",
+                    password:"",
                     resp: "Login failed."
                 });
                 alert(this.state.resp);
+                window.location.reload(false);
             });
     }
 
@@ -73,7 +73,6 @@ export default class LogInPage extends React.Component {
             googlesign:true,
         });
         this.handleLogIn(response)
-        // console.log(response)
     };
 
 
@@ -90,6 +89,7 @@ export default class LogInPage extends React.Component {
                 <input type="text" placeholder={"Username"}  name="user" onChange={this.handleLoginUserNameChange} /><br/>
                 <input type="text" placeholder={"Password"} name="pass" onChange={this.handleLoginPassChange} /><br/>
                 <button to='/' disabled={this.state.passwordfill&&this.state.usernamefill? false:true}onClick={this.handleLogIn}>Login</button><br/><br/>
+                <Link to="/forgot">Forgot your password?</Link>
             </div>
         );
     }

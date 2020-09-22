@@ -2,7 +2,9 @@ import React from 'react'
 import Posts from "./Posts";
 import '../CSS/style.css';
 import '../CSS/main_section.css'
-import {Link} from "react-router-dom";
+import axios from "axios";
+
+
 
 class MainSection extends React.Component {
 
@@ -12,32 +14,45 @@ class MainSection extends React.Component {
             key : "",
             username: this.props.username,
             search: false,
+            posts:[],
+            found:true,
         };
     }
-    componentDidUpdate() {
-        console.log("im in componentDidMount")
-        console.log("this is the key value", this.state.key)
-        if(this.state.search) {
-            this.render()
-        }
-    }
 
 
-    handleSearch = (e) => {
-        // e.preventDefault()
-        if(e.target.value !== "") {
+
+     handleSearch = (e) => {
+        if(e !== undefined) {
             this.setState({
-                key: e.target.value,
-                search: true
-            })
-        } else {
-            this.setState({
-                key:'',
-                search: false
-            })
+                key: e.target.value
+            });
         }
-         this.componentDidUpdate()
-    }
+            if (e.target.value !== "") {
+                axios.get(`/postss/${e.target.value}`).then(res => {
+                    if (res.data !== "no posts") {
+                        this.setState({
+                            search: true,
+                            posts: res.data,
+                        });
+                    }else {
+                        this.setState({
+                            found: false,
+
+                        });
+                    }
+
+                })
+            } else axios.get('/posts').then(res => {
+                if (res.data !== "no posts") {
+                    console.log("posts are:", res.data)
+                    this.setState({
+                        search: false,
+                        posts: res.data,
+                    });
+
+                }
+            })
+         }
 
     render() {
         return(
@@ -46,16 +61,18 @@ class MainSection extends React.Component {
                     <label className="title"> Best Blog</label>
                     <span className="vertical-line"> | </span>
                     <input type="text" placeholder="Search" size="54" onChange={this.handleSearch}/>
+                    {!this.state.found&&<p >no match</p>}
+
                     <div className= "posts-list">
 
                         {
-                            // this.state.search && <Posts {...this.props} username={this.state.username} MyKey={this.state.key}/>
-                            <Posts {...this.props} username={this.state.username} search = {this.state.search} MyKey={this.state.key}/>
+                            this.state.found &&  <Posts {...this.props} found ={this.state.found}Posts ={this.state.posts} Username={this.state.username} Search = {this.state.search} MyKey={this.state.key}/>
                         }
+
                     </div>
                 </section>
             </div>
-    );
+         );
     }
 }
 

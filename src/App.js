@@ -15,6 +15,8 @@ import { Redirect } from "react-router-dom";
 import Posts from "./Components/Posts";
 import CreateAndEdit from "./Pages/CreateAndEdit";
 import SinglePost from "./Pages/SinglePost";
+import ForgotPassword from "./Pages/ForgotPassword";
+import ResetPassword from "./Pages/ResetPassword";
 
 
 
@@ -68,8 +70,9 @@ class App extends React.Component {
                                 render={(props) => <LogInPage {...props} onLogIn={this.set_login_true}/> }>
                             </Route>
                             <Route path="/posts" component={(props)=><Posts {...props} username={username}/>}/>
-                            {/*<Route path="/postss/:keyword" component={(props)=><Posts {...props} username={username}/>}/>*/}
                             <Route path ="/signup" component={SignUpPage}/>
+                            <Route path ="/forgot" component={ForgotPassword}/>
+                            <Route path ='/reset/:id' component={ResetPassword}/>
                             <Route path='/post/:id' component={(props)=><SinglePost {...props} username={username} is_logged_in={is_logged_in} />}/>
                             <Route path='/edit/:id' component={(props)=> is_logged_in ?
                                 <CreateAndEdit {...props} username={username} edit = {this.state.edit}/>

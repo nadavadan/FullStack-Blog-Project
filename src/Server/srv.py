@@ -7,10 +7,10 @@ import mysql.connector, mysql.connector.pooling
 
 pool = mysql.connector.pooling.MySQLConnectionPool(
     pool_name="pool",
-    host="?",
+    host="myrds.c94pitaorldi.us-east-1.rds.amazonaws.com",
     user="admin",
     port = 3306,
-    passwd="?",
+    passwd="nadavN14",
     database="nadav_database",
     buffered=True,
     pool_size=3
@@ -43,9 +43,9 @@ def api_alive():
 
 @app.route('/postss/<key>', methods=['GET',])
 def get_posts_by_key(key):
-        query = "select id,title,content,author,published from posts where content REGEXP '%s'"
-        value = key
-        #value = (str(key),)
+        value = "'"+str(key)+"'"
+        query = "select id,title,content,author,published from posts where content REGEXP " + str(value)
+        value = "'"+str(key)+"'"
         data = []
         cursor = g.db.cursor()
         cursor.execute(query,value)
@@ -86,7 +86,6 @@ def add_post():
     now = datetime.now()
     full_time = now.strftime("%d/%m/%Y %H:%M:%S")
     data = request.get_json()
-    print(data)
     query = "insert into posts (title, content, author, published) values (%s, %s, %s, %s)"
     values = (data['title'], data['content'], data['author'],full_time)
     cursor = g.db.cursor()
@@ -100,20 +99,33 @@ def add_post():
 
 
 
-@app.route('/posts/<id>', methods = ['GET','PUT','DELETE'])
-def manage_id_requests(id):
-    if request.method == 'GET':
+@app.route('/post', methods = ['POST','PUT'])
+def manage_id_requests():
+    data = request.get_json()
+    id = data['post_id']
+    if request.method == 'POST':
         return get_post_by_ID(id)
     if request.method == 'PUT':
         return edit_post(id)
-    if request.method == 'DELETE':
-        return delete(id)
+
+@app.route('/delete', methods = ['POST'])
+def delete():
+        data = request.get_json()
+        id = data['post_id']
+        query = "delete  from posts where id = %s"
+        values = (id,)
+        cursor = g.db.cursor()
+        cursor.execute(query, values)
+        g.db.commit()
+        post_edit_id = cursor.lastrowid
+        cursor.close()
+
+        return 'post id: ' + str(post_edit_id) + "Deleted succesfully"
 
 
 def get_post_by_ID(id):
     query = "select id,title,content,author, published, counter from posts where id=%s"
     values = (id,)
-    #data = []
     cursor = g.db.cursor()
     cursor.execute(query, values)
     records = cursor.fetchall()
@@ -122,7 +134,6 @@ def get_post_by_ID(id):
 
     return json.dumps(dict(zip(header, records[0])), default=str)
 
-#@app.route('/edit/<id>', methods=['POST'])
 def edit_post(id):
     now = datetime.now()
     full_time = now.strftime("%d/%m/%Y %H:%M:%S")
@@ -137,16 +148,6 @@ def edit_post(id):
 
     return 'post id: ' + str(post_edit_id) + "Edited successfully"
 
-def delete(id):
-        query = "delete  from posts where id = %s"
-        values = (id,)
-        cursor = g.db.cursor()
-        cursor.execute(query, values)
-        g.db.commit()
-        post_edit_id = cursor.lastrowid
-        cursor.close()
-
-        return 'post id: ' + str(post_edit_id) + "Deleted succesfully"
 
 
 
@@ -165,7 +166,6 @@ def get_username():
             cursor.execute(query, values)
             g.db.commit()
             user_id = cursor.fetchone()
-            print("in get user" + str(user_id))
 
             query = "select userName from users where id =%s"
             values = str(user_id)
@@ -173,7 +173,7 @@ def get_username():
             cursor.execute(query, values)
             g.db.commit()
             username = cursor.fetchone()
-            print(str(username))
+
 
             return str(username)
 
@@ -188,7 +188,6 @@ def login():
         return google_sign_up(data['fullname'],data['username'],data['password'])
     if not record:
         abort(401)
-
     user_id = record[0]
     user_pass = record[1]
     hashed_pass = user_pass.encode('utf-8')
@@ -206,15 +205,15 @@ def login():
 
     return str(user_id)
 
-def google_sign_up(fullname,username,password):
-    hashed_pass = bcrypt.hashpw(data['password'].encode('utf-8'), bcrypt.gensalt())
-    query = 'insert into users (fullName, userName, pass) values (%s, %s, %s)'
-    values = (fullname, username, password)
-    cursor = g.db.cursor()
-    ursor.execute(query, values)
-    g.db.commit()
-    cursor.close()
-    return "google_sign_up"
+#def google_sign_up(fullname,username,password):
+    #hashed_pass = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+    #query = 'insert into users (fullName, userName, pass) values (%s, %s, %s)'
+    #values = (fullname, username, password)
+    #cursor = g.db.cursor()
+    #ursor.execute(query, values)
+    #g.db.commit()
+    #cursor.close()
+    #return "google_sign_up"
 
 @app.route('/signup', methods=['POST'])
 def sign_up():
@@ -223,8 +222,8 @@ def sign_up():
         return abort(409)
 
     hashed_pass = bcrypt.hashpw(data['password'].encode('utf-8'), bcrypt.gensalt())
-    query = 'insert into users (fullName, userName, pass) values (%s, %s, %s)'
-    values = (data['fullname'], data['username'], hashed_pass)
+    query = 'insert into users (fullName, userName, pass,email) values (%s, %s, %s,%s)'
+    values = (data['fullname'], data['username'], hashed_pass, data['email'])
     cursor = g.db.cursor()
     cursor.execute(query, values)
     g.db.commit()
@@ -270,16 +269,16 @@ def logout():
         cursor = g.db.cursor()
         cursor.execute(query, values)
         g.db.commit()
-#        response = make_response()
-#        response.set_cookie('session_id', '')
         return "Success!"
     return "Failed!"
 
 
 
-@app.route('/comment/<id>', methods=['GET', 'POST'])
-def manage_comment_requests(id):
-    if request.method == 'GET':
+@app.route('/comment', methods=['PUT', 'POST'])
+def manage_comment_requests():
+    data = request.get_json()
+    id = data['post_id']
+    if request.method == 'PUT':
         return get_all_comments(id)
     else:
         data = request.get_json()
@@ -288,9 +287,8 @@ def manage_comment_requests(id):
 def add_comment(data):
     now = datetime.now()
     full_time = now.strftime("%d/%m/%Y %H:%M:%S")
-    print(data)
     query = "insert into comments (username, content, postid, published) values (%s, %s, %s, %s)"
-    values = (data['username'], data['content'], data['postid'], full_time)
+    values = (data['username'], data['content'], data['post_id'], full_time)
 
     cursor = g.db.cursor()
     cursor.execute(query, values)
@@ -341,10 +339,56 @@ def popular_posts_id():
 
 
 
+@app.route('/forgot/<id>', methods=['GET'])
+def checkUser(id):
+    query = "select id from users where email =%s"
+    values = (id,)
+    cursor = g.db.cursor()
+    cursor.execute(query, values)
+    g.db.commit()
+    username = cursor.fetchone()
+    if not username:
+        return "no such user"
+    return "user exist"
+
+@app.route('/reset', methods=['POST'])
+def func():
+    data = request.get_json()
+    query = 'insert into resets (email, uuid) values (%s, %s)'
+    values = (data['email'], data['uuid'])
+    cursor = g.db.cursor()
+    cursor.execute(query, values)
+    g.db.commit()
+    cursor.close()
+    return  'resets successfully'
+
+@app.route('/reset/<id>', methods=['POST'])
+def changePassword(id):
+    data = request.get_json()
+    query = "select email from resets where uuid =%s"
+    values = (id,)
+    cursor = g.db.cursor()
+    cursor.execute(query, values)
+    email = cursor.fetchone()
+    if not email[0]: return "Link expired"
+    g.db.commit()
+    hashed_pass = bcrypt.hashpw(data['password'].encode('utf-8'), bcrypt.gensalt())
+    query = "update users set pass=%s where email =%s"
+    values = (hashed_pass,email[0])
+    cursor = g.db.cursor()
+    cursor.execute(query, values)
+    g.db.commit()
+    cursor.close()
+
+    query = "delete  from resets where uuid = %s"
+    values = (id,)
+    cursor = g.db.cursor()
+    cursor.execute(query, values)
+    g.db.commit()
+    cursor.close()
 
 
-
-
+    return index()
 
 
 if __name__ == "__main__":

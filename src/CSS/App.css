@@ -1,7 +1,4 @@
-/*.app-header{*/
-/*    justify-content: space-between;*/
-/*    padding-left: 10px;*/
-/*}*/
+
 .page{
     margin-top: -10px;
 
@@ -18,27 +15,4 @@
     padding-bottom: 100px;
 }
 
-.sidebar-container {
-    /*flex-direction: column;*/
-    margin-left: 40px;
-    flex-basis: 20%;
 
-}
-.about_me_container{
-    width:200px;
-    height:200px;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    margin-top: -100px;
-    margin-left: -100px;
-}
-
-about_me_container h2{
-    text-decoration: underline;
-
-}
-.about_me_content{
-
-
-}

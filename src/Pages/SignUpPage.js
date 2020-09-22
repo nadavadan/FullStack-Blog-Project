@@ -7,11 +7,13 @@ export default class SignUpPage extends React.Component {
         super(props);
         this.state = {
             fullname: "",
+            email:"",
             username: "",
             password: "",
             fullnameFill:false,
             usernameFill:false,
             passwordFill:false,
+            emailFill:false,
         };
     }
 
@@ -34,14 +36,22 @@ export default class SignUpPage extends React.Component {
 
         });
     }
+    handleEmailChange = (event) => {
+        this.setState({
+            email:event.target.value,
+            emailFill: event.target.value !== "",
+
+        });
+    }
     handleSignUp = (event) => {
         event.preventDefault();
-        const {fullname, username, password} = this.state
+        const {fullname, username, password,email} = this.state
 
         Axios.post('/signup', {
             fullname: fullname,
             username:username,
-            password:password
+            password:password,
+            email:email,
         })
             .then((res) => {
                 this.setState({
@@ -68,9 +78,10 @@ export default class SignUpPage extends React.Component {
             <div className="sign_up">
                 <h2></h2>
                   <input type="text" placeholder={"Full Name"} name="full_name" onChange={this.handleFullNameChange}/><br/>
+                  <input type="text"placeholder={"Email"}name="Email" onChange={this.handleEmailChange}/>
                   <input type="text"placeholder={"User Name"}name="user_name" onChange={this.handleUserNameChange}/><br/>
                   <input type="password" placeholder={"Password"} name="password" onChange={this.handlePassChange}/><br/>
-                <button disabled={this.state.usernameFill&&this.state.fullnameFill&&this.state.passwordFill? false:true}onClick={this.handleSignUp}>Sign Up</button><br/><br/>
+                <button disabled={this.state.emailFill&&this.state.usernameFill&&this.state.fullnameFill&&this.state.passwordFill? false:true}onClick={this.handleSignUp}>Sign Up</button><br/><br/>
             </div>
         );
     }

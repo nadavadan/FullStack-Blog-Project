@@ -16,11 +16,10 @@ class PostPage extends React.Component {
     }
 
     componentDidMount() {
-        let id = this.props.match.params.id;
-        axios.get(`/posts/${id}`).then(res => {
+        const data = { post_id: this.props.match.params.id}
+        axios.post('/post',data).then(res => {
             this.setState({
                 post: res.data,
-                post_id:id,
             });
         })
     }
@@ -31,7 +30,7 @@ class PostPage extends React.Component {
             <div>
                 <h1>{this.state.post.title}</h1>
                 <p>{ReactHtmlParser(this.state.post.content)}</p>
-                <Comments post_id = {this.state.post_id} username={this.props.username} is_logge_in={this.state.is_logged_in} />
+                <Comments Post_id = {this.state.post_id} username={this.props.username} is_logge_in={this.state.is_logged_in} />
             </div>
         )
     }

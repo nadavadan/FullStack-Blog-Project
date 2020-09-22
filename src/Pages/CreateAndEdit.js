@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import axios from 'axios';
 import CKEditor from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import ReactHtmlParser from "react-html-parser";
 
 class CreateAndEdit extends React.Component {
 
@@ -21,11 +22,10 @@ class CreateAndEdit extends React.Component {
 
         componentDidMount() {
             if (this.state.edit){
-                let {postId} = this.state;
-                axios.get(`/posts/${postId}`).then(res => {
+                axios.get(`/post`).then(res => {
                      this.setState({
                         title: res.data.title,
-                        content: res.data.content
+                        content: res.data.content,
                     });
                 })
             }else{
@@ -47,26 +47,22 @@ class CreateAndEdit extends React.Component {
         })
 
     }
-    // handleContentChange = (e) => {
-    //     this.setState({
-    //         content: e.target.value,
-    //         contentfill: e.target.value !=="",
-    //     })
-    // }
-    // handleContentChange(content, editor) {
-    //     this.setState({content})
-    // }
 
     handleSubmit = (e) => {
         e.preventDefault();
+        this.setState({
+           content:ReactHtmlParser(this.state.content)
+        });
         const data = {
             title: this.state.title,
+            titlecontent: this.state.content,
             content: this.state.content,
             author:this.state.author,
+            post_id: this.props.match.params.id,
         }
 
         if (this.state.edit){
-            axios.put(`/posts/${this.state.postId}`, data)
+            axios.put(`/post`, data)
                 .then(res => {
                     if(res.status === 200) {
                         this.setState({
@@ -108,11 +104,6 @@ class CreateAndEdit extends React.Component {
                     <input type="text" defaultValue={title} size="54" onChange={this.handleTitleChange}>
                     </input>
                     <br/><br/>
-                    {/*<textarea*/}
-                    {/*   rows="8" cols="50" defaultValue={content} onChange={this.handleContentChange}*/}
-
-                    {/*/>*/}
-
                     <div className="post-container">
                         <CKEditor
                             defaultValue="123"
@@ -126,7 +117,8 @@ class CreateAndEdit extends React.Component {
                     </div>
 
                     <br/><br/>
-                    <input type="submit" disabled={this.state.titlefill&&this.state.contentfill? false:true} value={button} onClick={this.handleSubmit}/>
+                    <input type="submit" value={button} onClick={this.handleSubmit}/>
+                    {/*disabled={this.state.titlefill&&this.state.contentfill? false:true}*/}
                 </p>
             </div>
         );

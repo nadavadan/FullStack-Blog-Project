@@ -13,7 +13,7 @@ class Comments extends React.Component {
         this.state = {
             comments:[],
             comment:"",
-            postid: this.props.post_id,
+            post_id: this.props.Post_id,
             username: this.props.username,
             published : "",
             is_logged_in:this.props.is_logge_in,
@@ -21,12 +21,16 @@ class Comments extends React.Component {
     }
 
     componentDidMount() {
-        axios.get(`/comment/${this.props.post_id}`).then(res => {
-            this.setState({
-                comments: res.data,
-                published: res.data.published,
-            });
-        })
+        const data = {post_id: this.props.Post_id}
+        if(data) {
+            axios.put('/comment', data)
+                .then((res) => {
+                    this.setState({
+                        comments: res.data,
+                        published: res.data.published,
+                    });
+                })
+        }
     }
 
     showComment =()=> {
@@ -48,11 +52,11 @@ class Comments extends React.Component {
         e.preventDefault();
         const data = {
             username: this.props.username,
-            postid:this.props.post_id,
+            post_id: this.props.Post_id,
             content: this.state.comment,
         }
 
-        axios.post(`/comment/${this.props.post_id}`, data).then(res => {
+        axios.post(`/comment`, data).then(res => {
             this.setState({
                 comment: '',
             });
@@ -76,7 +80,6 @@ class Comments extends React.Component {
                             console.log( { event, editor } );
                         } }
                     />
-                    {/*<input type="text" value={this.state.comment} placeholder="Add your comment" size="54" onChange={this.handleAddComment}/>*/}
                     <br/><br/>
                     <button onClick={this.onNewCommentClick}>Post</button>
                 </div>

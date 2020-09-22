@@ -1,0 +1,6 @@
+.sidebar-container {
+    /*flex-direction: column;*/
+    margin-left: 40px;
+    flex-basis: 20%;
+
+}
