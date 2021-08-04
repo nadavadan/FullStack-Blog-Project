@@ -15,6 +15,7 @@ class PostPage extends React.Component {
         };
     }
 
+    //Init specific post s.t post id taken from URL.
     componentDidMount() {
         const data = { post_id: this.props.match.params.id}
         axios.post('/post',data).then(res => {

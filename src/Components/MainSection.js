@@ -5,7 +5,6 @@ import '../CSS/main_section.css'
 import axios from "axios";
 
 
-
 class MainSection extends React.Component {
 
     constructor(props) {
@@ -18,8 +17,6 @@ class MainSection extends React.Component {
             found:true,
         };
     }
-
-
 
      handleSearch = (e) => {
         if(e !== undefined) {
@@ -49,7 +46,6 @@ class MainSection extends React.Component {
                         search: false,
                         posts: res.data,
                     });
-
                 }
             })
          }
@@ -58,17 +54,14 @@ class MainSection extends React.Component {
         return(
             <div className = "main-section">
                 <section >
-                    <label className="title"> Best Blog</label>
+                    <label className="title"> Science and space Blog</label>
                     <span className="vertical-line"> | </span>
                     <input type="text" placeholder="Search" size="54" onChange={this.handleSearch}/>
-                    {!this.state.found&&<p >no match</p>}
-
+                    {!this.state.found&&<p >No match</p>}
                     <div className= "posts-list">
-
                         {
                             this.state.found &&  <Posts {...this.props} found ={this.state.found}Posts ={this.state.posts} Username={this.state.username} Search = {this.state.search} MyKey={this.state.key}/>
                         }
-
                     </div>
                 </section>
             </div>

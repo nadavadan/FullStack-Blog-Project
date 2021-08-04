@@ -89,7 +89,7 @@ export default class LogInPage extends React.Component {
                 <input type="text" placeholder={"Username"}  name="user" onChange={this.handleLoginUserNameChange} /><br/>
                 <input type="text" placeholder={"Password"} name="pass" onChange={this.handleLoginPassChange} /><br/>
                 <button to='/' disabled={this.state.passwordfill&&this.state.usernamefill? false:true}onClick={this.handleLogIn}>Login</button><br/><br/>
-                <Link to="/forgot">Forgot your password?</Link>
+                <Link to="/forgot">Lost your memory?</Link>
             </div>
         );
     }

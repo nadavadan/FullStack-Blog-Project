@@ -4,11 +4,9 @@ import '../CSS/header.css';
 import axios from "axios";
 
 
-
 class Header extends React.Component {
     constructor(props) {
         super(props)
-
         this.state = {
             username:this.props.user_name,
             isLoggedIn: this.props.is_logged_in,
@@ -16,7 +14,6 @@ class Header extends React.Component {
             onLogout: this.props.onLogout,
         };
     }
-
 
     doLogout = () => {
         const data = {
@@ -36,15 +33,15 @@ class Header extends React.Component {
             });
     }
 
-
     render() {
         return (
             <div>
-                <div className="left-nav-bar">
+                {/*alternate class name - left-nav-bar*/}
+                <div className="Header">
                   <Link to="/">Home</Link>    <Link to="/about">About</Link>
                   <Link to="/add-post">New Post</Link>
                 </div>
-
+                {/*Functionality by blog users permission*/}
                 <div className="login_signin_logout">
                     {!this.props.is_logged_in && <Link  to="/signup">Sign Up</Link>}
                     {this.props.is_logged_in && <label>{'Hello ' + this.props.user_name} </label>}
@@ -55,5 +52,4 @@ class Header extends React.Component {
         );
     }
 }
-
 export default Header;

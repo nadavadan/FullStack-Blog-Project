@@ -17,6 +17,13 @@ export default class ResetPassword extends React.Component {
             verifypasswordfill:false
         };
     }
+
+    // passStrength = (event) => {
+    //     this.setState({
+    //
+    //     });
+    // }
+
     handleSubmit = () => {
         if (this.state.password !== this.state.verifypassword){
             alert("verify your password");

@@ -10,7 +10,6 @@ export default class Posts extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            // posts: [],
             found:this.props.found,
             posts:this.props.Posts,
             comments:[],
@@ -21,7 +20,7 @@ export default class Posts extends React.Component {
         };
 
     }
-
+    //init existing posts in component
     componentDidMount() {
            axios.get('/posts').then(res => {
                console.log("this is res ", res.data)
@@ -35,14 +34,15 @@ export default class Posts extends React.Component {
            })
     }
 
+    //function for render posts from posts array.
     showPost =()=> {
-        console.log("this is show post", this.state.posts)
-        console.log("this is show post props", this.props.Posts)
-        console.log(JSON.stringify(this.props.Posts))
-        if (this.props.Search){
-            if (!this.state.found){
+        // console prints for debugging-->
+        // console.log("this is show post", this.state.posts)
+        // console.log("this is show post props", this.props.Posts)
+        // console.log(JSON.stringify(this.props.Posts))
 
-            }
+        //If search applied take keyword from props else take keyword from state.
+        if (this.props.Search){
             return this.props.Posts.map((post,index)=>{
                 return this.onePost(post,index)
             })
@@ -51,22 +51,22 @@ export default class Posts extends React.Component {
                 return this.onePost(post,index)
             })
         }
-
     }
 
-
     render() {
-        console.log(this.state.posts)
+        console.log("current state in posts: " , this.state.posts)
         return (
             <div>
                 {this.showPost()}
             </div>
         )}
 
+    // delete this post
     deletePost = (post_id) => {
         const data={
             post_id:post_id,
         }
+        //axios 'delete' usage.
         axios.post('/delete',data)
             .then(res => {
                 this.setState({
@@ -76,6 +76,7 @@ export default class Posts extends React.Component {
             })
     }
 
+    //raise views counter in this post.
     postCounter = (post_id) => {
         axios.put(`/counter/${post_id}`)
             .then(res => {
@@ -83,27 +84,27 @@ export default class Posts extends React.Component {
                 this.setState({
                 });
             }).catch(err=>{
-
             })
     }
 
-
+     //function for render usage through show post function.
      onePost=(post,index)=>{
-        console.log("this is post", post)
+        console.log("current post: ", post)
         return (
-
             <div key = {index}>
             <div className="post-container">
                 <div className="post">
                     <label className="post-title">
+                        {/*Link to single page post and raise views count in database*/}
                         <Link to={`/post/${post.id}`}>
                             <button value={"post"} className="post-title-button" onClick={()=>this.postCounter(post.id)}>
                                 <span className="button--inner">{post.title}</span>
                             </button>
                         </Link>
+                        {/*Edit and delete permission for post creator*/}
                         {this.props.username === post.author &&
                             <>
-                                <Link to={`/edit/${post.id}`} className="edit">Edit  </Link>
+                                <Link to={`/edit/${post.id}`} className="edit"> Edit  </Link>
                                 <button className="delete" onClick={()=>this.deletePost(post.id)}> Delete </button>
                             </>
                         }
@@ -119,7 +120,8 @@ export default class Posts extends React.Component {
                     </label>
                 </div>
             </div>
-                {console.log(post.id)}
+                {/*{console.log(post.id)}*/}
+                {/*Show comments -> comments component are in single post page*/}
                 <Link to={`/post/${post.id}`} className="comments"> {'Comments'} </Link>
             </div>
         );

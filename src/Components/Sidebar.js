@@ -11,6 +11,8 @@ class Sidebar extends React.Component{
             username:this.props.username,
         };
     }
+
+    //Init popular post in side bar (decided by views count).
     componentDidMount() {
             axios.get('/popular').then(res => {
                 if (res.data!== "no posts" ) {

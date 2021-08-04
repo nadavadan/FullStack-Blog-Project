@@ -3,10 +3,10 @@ import '../CSS/about_me.css';
 function AboutMe(){
     return (
         <div className="about_me_container">
-            <h1 >About Me </h1>
+            <h1 >Welcome to my world.. </h1>
             <div className="about_me_content">
                 <p>
-                    Best blog
+                    best science and space blog in earth
                     Mail: nadavadantal@gmail.com
                 </p>
              </div>

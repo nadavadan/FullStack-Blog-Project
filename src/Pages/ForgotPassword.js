@@ -5,9 +5,6 @@ import { v4 as uuidv4 } from 'uuid';
 import emailjs from 'emailjs-com';
 
 
-
-
-
 export default class ForgotPassword extends React.Component {
 
     constructor(props) {
@@ -40,10 +37,12 @@ export default class ForgotPassword extends React.Component {
                 this.props.history.push('/login')
             });
     }
+
+    //Secure fixes -back
     resetPassword =(email)=>{
         let uuid = uuidv4()
         this.sendEmail(email,uuid)
-        console.log("email on reset",email);
+        console.log("Email on reset",email);
         Axios.post('/reset', {
             uuid:uuid,
             email:email

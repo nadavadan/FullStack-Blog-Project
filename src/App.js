@@ -35,8 +35,7 @@ class App extends React.Component {
     }
 
     set_login_true =(id ,username ) =>{
-        console.log("username === " + username)
-
+        console.log("Username ", username, "Logged in")
         this.setState({
             is_logged_in: true,
             username: username,
@@ -56,6 +55,7 @@ class App extends React.Component {
             <div className="app-header">
                 <Router>
                     <div className="header">
+                        {/*Header component*/}
                         <Header
                                is_logged_in={is_logged_in}
                                user_name={username}
@@ -63,7 +63,6 @@ class App extends React.Component {
                                onLogout={this.set_login_false}
                         />
                     </div>
-
                     <div className="page">
                         <Switch>
                             <Route path="/login"
